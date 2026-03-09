@@ -1,0 +1,15 @@
+{
+  "name": "groq-telegram-bot",
+  "version": "1.0.0",
+  "description": "Telegram AI Bot powered by Groq API",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "node --watch bot.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "groq-sdk": "^0.9.0",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}
