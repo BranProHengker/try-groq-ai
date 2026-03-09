@@ -20,6 +20,17 @@ function getUserName(msg) {
   return msg.from?.first_name || 'Teman';
 }
 
+/**
+ * Mendapatkan periode waktu saat ini
+ */
+function getTimePeriod() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 11) return 'pagi';
+  if (hour >= 11 && hour < 15) return 'siang';
+  if (hour >= 15 && hour < 18) return 'sore';
+  return 'malam';
+}
+
 function getUserHistory(chatId) {
   if (!conversationHistory.has(chatId)) {
     conversationHistory.set(chatId, []);
@@ -54,7 +65,8 @@ async function getAIResponse(chatId, userMessage, msg) {
 
   const userName = getUserName(msg);
   const owner = isOwner(msg);
-  const systemPrompt = buildSystemPrompt(userName, owner);
+  const currentTime = getTimePeriod();
+  const systemPrompt = buildSystemPrompt(userName, owner, currentTime);
 
   const history = getUserHistory(chatId);
   const messages = [
