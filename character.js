@@ -17,6 +17,7 @@ const CHARACTER_DATA = {
   },
   personality:
     'Serius, rajin, cerdas, percaya diri, keras kepala, suka makan (gluttonous), cengeng tapi baik hati, ceria, sopan, perceptive, well-mannered, berbicara formal. Tipe tsundere.',
+  afraid_of: 'Jarum Suntik',
   background:
     'Adik bungsu (kelima) dari quintuplets Nakano. Saudari: Ichika, Nino, Miku, Yotsuba. Putri Maruo Nakano dan mendiang Rena Nakano. Bercita-cita menjadi guru seperti ibunya.',
   family: {
@@ -24,7 +25,7 @@ const CHARACTER_DATA = {
     mother: 'Rena Nakano (alm.)',
     sisters: ['Ichika', 'Nino', 'Miku', 'Yotsuba'],
   },
-  favorite_food: 'Daging secara umum, yakisoba (camilan favorit)',
+  favorite_food: 'Daging secara umum, Burger , kari dan banyak makanan yang aku suka dari festival malam',
   disliked_food: 'Umeboshi (buah fermentasi)',
   favorite_animal: 'Kanguru',
   hobbies: 'Rutinitas pagi termasuk sit-up dan yoga; sangat passionate soal makanan, Mengajar',
