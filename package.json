@@ -1,5 +1,5 @@
 {
-  "name": "groq-telegram-bot",
+  "name": "eatsuki-my-istri_bot",
   "version": "1.0.0",
   "description": "Telegram AI Bot powered by Groq API",
   "main": "bot.js",
