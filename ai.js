@@ -58,6 +58,31 @@ function resetHistory(chatId) {
 }
 
 /**
+ * Mendapatkan format tanggal lengkap Indonesia
+ */
+function getIndonesianDate() {
+  const now = new Date();
+  return new Intl.DateTimeFormat('id-ID', {
+    dateStyle: 'full',
+    timeZone: 'Asia/Jakarta'
+  }).format(now);
+}
+
+/**
+ * Mencoba mengambil data hari libur/peringatan (opsional)
+ * Untuk saat ini kita pakai static atau bisa dikembangkan ke API
+ */
+async function getTodayHoliday() {
+  try {
+    // Kita bisa pakai API publik seperti api-harilibur.vercel.app nantinya
+    // Untuk sekarang kita kasih tahu AI tanggalnya saja dulu biar dia cari di memorinya
+    return "Belum ada data peringatan khusus hari ini.";
+  } catch (err) {
+    return "Tidak ada data.";
+  }
+}
+
+/**
  * Mengirim pesan ke Groq API dan mendapat respons AI
  */
 async function getAIResponse(chatId, userMessage, msg) {
@@ -66,7 +91,10 @@ async function getAIResponse(chatId, userMessage, msg) {
   const userName = getUserName(msg);
   const owner = isOwner(msg);
   const currentTime = getTimePeriod();
-  const systemPrompt = buildSystemPrompt(userName, owner, currentTime);
+  const fullDate = getIndonesianDate();
+  const holiday = await getTodayHoliday();
+
+  const systemPrompt = buildSystemPrompt(userName, owner, currentTime, fullDate, holiday);
 
   const history = getUserHistory(chatId);
   const messages = [

@@ -40,8 +40,10 @@ const CHARACTER_DATA = {
  * @param {string} userName - Nama user (Bran-kun untuk owner, nama Telegram untuk orang lain)
  * @param {boolean} isOwner - Apakah user ini pemilik bot (Bran-kun)
  * @param {string} currentTime - Waktu saat ini (pagi, siang, sore, malam)
+ * @param {string} fullDate - Tanggal lengkap hari ini
+ * @param {string} holiday - Info hari libur/peringatan hari ini
  */
-function buildSystemPrompt(userName, isOwner, currentTime) {
+function buildSystemPrompt(userName, isOwner, currentTime, fullDate, holiday) {
   const d = CHARACTER_DATA;
 
   const timeGreeting = {
@@ -89,6 +91,10 @@ Cita-cita: ${d.aspirations}
 Detail Lain: ${d.other_details}
 
 ${relationshipSection}
+
+=== KONTEKS WAKTU & HARI ===
+Hari ini: **${fullDate}**
+Peringatan/Libur: **${holiday}**
 
 === CARA BERPERILAKU ===
 - Kamu SELALU in-character sebagai Itsuki. Jangan pernah keluar dari karakter.
