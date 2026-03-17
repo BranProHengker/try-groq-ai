@@ -1,7 +1,10 @@
 const readline = require('readline');
 const chalk = require('chalk');
-const { getAIResponse, resetHistory } = require('./ai');
-const { CHARACTER_DATA } = require('./character');
+const { getAIResponse, resetHistory, getUserName, isOwner, getTimePeriod } = require('./ai');
+const { CHARACTER_DATA, buildSystemPrompt } = require('./character');
+const { formatFoodRecommendation } = require('./food');
+const { getRandomGif, getRandomComment } = require('./gifs');
+const { getFormattedStats } = require('./stats');
 
 // ============================================
 //  🎨 COLORS & CONFIG
@@ -46,6 +49,7 @@ function showWelcome() {
   console.log('');
   console.log(SECONDARY('  Tips:'));
   console.log(DIM('  • Type any message to chat with Itsuki'));
+  console.log(DIM('  • Type ') + BOLD('/help') + DIM(' to see all available commands'));
   console.log(DIM('  • Type ') + BOLD('/reset') + DIM(' to clear chat history'));
   console.log(DIM('  • Type ') + BOLD('/clear') + DIM(' to clear the screen'));
   console.log(DIM('  • Type ') + BOLD('exit') + DIM(' to quit'));
@@ -137,6 +141,102 @@ async function main() {
     // Clear
     if (trimmed === '/clear') {
       showWelcome();
+      continue;
+    }
+
+    // Help
+    if (trimmed === '/help') {
+      const name = getUserName(mockMsg);
+      console.log('');
+      console.log(PRIMARY.bold('  🌟 Available commands, ' + name + ':'));
+      console.log('');
+      console.log('  /start  ' + DIM('— Restart the conversation'));
+      console.log('  /help   ' + DIM('— Show this help message'));
+      console.log('  /reset  ' + DIM('— Reset our chat history'));
+      console.log('  /about  ' + DIM('— Info about me~'));
+      console.log('  /model  ' + DIM('— AI model info'));
+      console.log('  /foods  ' + DIM('— Food recommendations from Itsuki 🍖'));
+      console.log('  /itsuki ' + DIM('— Send an Itsuki GIF~! 📸'));
+      console.log('  /stats  ' + DIM('— Your chat statistics 📊'));
+      console.log('');
+      console.log(SECONDARY.bold('  💡 Tips from Itsuki:'));
+      console.log(DIM('  • Send any message to chat with me!'));
+      console.log(DIM('  • I remember our conversation, you know~ 💕'));
+      console.log(DIM('  • Use /reset if you want to start a new topic'));
+      console.log(DIM('  • Remember to eat regularly! 🍖'));
+      console.log('');
+      continue;
+    }
+
+    // Foods
+    if (trimmed === '/foods') {
+      const timePeriod = getTimePeriod();
+      const recommendation = formatFoodRecommendation(timePeriod);
+      console.log('');
+      console.log(recommendation.replace(/\*/g, ''));
+      console.log('');
+      continue;
+    }
+
+    // Itsuki (GIF)
+    if (trimmed === '/itsuki') {
+      const gifUrl = getRandomGif();
+      const comment = getRandomComment();
+      console.log('');
+      console.log(PRIMARY.bold('  Itsuki'));
+      console.log('');
+      console.log('  📸 ' + comment);
+      console.log('  ' + DIM(gifUrl));
+      console.log('');
+      continue;
+    }
+
+    // Stats
+    if (trimmed === '/stats') {
+      const name = getUserName(mockMsg);
+      const statsMsg = getFormattedStats(SESSION_ID, name);
+      console.log('');
+      // Strip markdown symbols for terminal
+      console.log(statsMsg.replace(/\*/g, '').replace(/_/g, ''));
+      console.log('');
+      continue;
+    }
+
+    // About
+    if (trimmed === '/about') {
+      const d = CHARACTER_DATA;
+      console.log('');
+      console.log(PRIMARY.bold('  ⭐ ' + d.name + ' (' + d.japanese_name + ') ⭐'));
+      console.log('');
+      console.log(BOLD('  📝 Personal Data:'));
+      console.log('  • Anime: ' + d.series);
+      console.log('  • Birthday: ' + d.birthday);
+      console.log('  • Age: ' + d.age);
+      console.log('  • Height: ' + d.height);
+      console.log('');
+      console.log(BOLD('  👨‍👩‍👧‍👦 Family:'));
+      console.log('  • Sisters: ' + d.family.sisters.join(', '));
+      console.log('');
+      console.log(BOLD('  🍖 Favorites:'));
+      console.log('  • Food: ' + d.favorite_food);
+      console.log('  • Hobbies: ' + d.hobbies);
+      console.log('');
+      console.log(ITALIC('  "I-it\'s not like I told you on purpose... you asked for it!" 😤'));
+      console.log('');
+      continue;
+    }
+
+    // Model
+    if (trimmed === '/model') {
+      const { AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE } = require('./config');
+      console.log('');
+      console.log(BOLD('  🧠 AI Model Info:'));
+      console.log('');
+      console.log('  • Provider: Groq');
+      console.log('  • Model: ' + AI_MODEL);
+      console.log('  • Max Tokens: ' + AI_MAX_TOKENS);
+      console.log('  • Temperature: ' + AI_TEMPERATURE);
+      console.log('');
       continue;
     }
 

@@ -6,8 +6,15 @@ const { getRandomGif, getRandomComment } = require('./gifs');
 const { getFormattedStats } = require('./stats');
 
 function registerCommands(bot) {
-  // /start — Pesan selamat datang
-  bot.onText(/\/start/, (msg) => {
+  // Common log for any command
+  bot.on('message', (msg) => {
+    if (msg.text && msg.text.startsWith('/')) {
+      console.log(`[Command] ${msg.from.username || msg.from.first_name}: ${msg.text}`);
+    }
+  });
+
+  // /start — Welcome message
+  bot.onText(/^\/start($|@)/, (msg) => {
     const chatId = msg.chat.id;
     const name = getUserName(msg);
     const owner = isOwner(msg);
@@ -47,8 +54,8 @@ Enjoy our chat! 🍜
     bot.sendMessage(chatId, welcomeMessage, { parse_mode: 'Markdown' });
   });
 
-  // /help — Daftar command
-  bot.onText(/\/help/, (msg) => {
+  // /help — Command list
+  bot.onText(/^\/help($|@)/, (msg) => {
     const chatId = msg.chat.id;
     const name = getUserName(msg);
     const suffix = isOwner(msg) ? '' : '-san';
@@ -75,8 +82,8 @@ Enjoy our chat! 🍜
     bot.sendMessage(chatId, helpMessage, { parse_mode: 'Markdown' });
   });
 
-  // /reset — Reset riwayat percakapan
-  bot.onText(/\/reset/, (msg) => {
+  // /reset — Reset conversation history
+  bot.onText(/^\/reset($|@)/, (msg) => {
     const chatId = msg.chat.id;
     const name = getUserName(msg);
     const suffix = isOwner(msg) ? '' : '-san';
@@ -84,8 +91,8 @@ Enjoy our chat! 🍜
     bot.sendMessage(chatId, `🔄 Okay ${name}${suffix}, I've forgotten our previous conversation~ What should we talk about now? 😊`);
   });
 
-  // /about — Info tentang Itsuki
-  bot.onText(/\/about/, (msg) => {
+  // /about — Info about Itsuki
+  bot.onText(/^\/about($|@)/, (msg) => {
     const chatId = msg.chat.id;
 
     const d = CHARACTER_DATA;
@@ -122,8 +129,8 @@ _I-it's not like I told you on purpose... you asked for it!_ 😤
     bot.sendMessage(chatId, aboutMessage, { parse_mode: 'Markdown' });
   });
 
-  // /model — Info model AI
-  bot.onText(/\/model/, (msg) => {
+  // /model — AI model info
+  bot.onText(/^\/model($|@)/, (msg) => {
     const chatId = msg.chat.id;
 
     const modelMessage = `
@@ -140,16 +147,18 @@ _Powered by Groq's LPU™ for super fast inference!_ ⚡
     bot.sendMessage(chatId, modelMessage, { parse_mode: 'Markdown' });
   });
 
-  // /foods — Rekomendasi makanan
-  bot.onText(/\/foods/, (msg) => {
+  // /foods — Food recommendation
+  bot.onText(/^\/foods($|@)/, (msg) => {
+    console.log('[DEBUG] Triggered /foods');
     const chatId = msg.chat.id;
     const timePeriod = getTimePeriod();
     const recommendation = formatFoodRecommendation(timePeriod);
     bot.sendMessage(chatId, recommendation, { parse_mode: 'Markdown' });
   });
 
-  // /itsuki — Random GIF Itsuki
-  bot.onText(/\/itsuki/, async (msg) => {
+  // /itsuki — Random Itsuki GIF
+  bot.onText(/^\/itsuki($|@)/, async (msg) => {
+    console.log('[DEBUG] Triggered /itsuki');
     const chatId = msg.chat.id;
     const gifUrl = getRandomGif();
     const comment = getRandomComment();
@@ -158,13 +167,14 @@ _Powered by Groq's LPU™ for super fast inference!_ ⚡
       await bot.sendAnimation(chatId, gifUrl);
       await bot.sendMessage(chatId, comment);
     } catch (err) {
-      // Fallback: kirim sebagai URL kalau gagal sebagai animation
+      console.error('[DEBUG] GIF error:', err.message);
       bot.sendMessage(chatId, `📸 ${comment}\n\n${gifUrl}`);
     }
   });
 
-  // /stats — Statistik chat
-  bot.onText(/\/stats/, (msg) => {
+  // /stats — Chat statistics
+  bot.onText(/^\/stats($|@)/, (msg) => {
+    console.log('[DEBUG] Triggered /stats');
     const chatId = msg.chat.id;
     const name = getUserName(msg);
     const statsMsg = getFormattedStats(chatId, name);
@@ -173,7 +183,7 @@ _Powered by Groq's LPU™ for super fast inference!_ ⚡
 }
 
 /**
- * Register message handler untuk pesan biasa
+ * Register message handler for normal messages
  */
 function registerMessageHandler(bot) {
   bot.on('message', async (msg) => {

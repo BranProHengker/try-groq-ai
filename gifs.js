@@ -2,51 +2,48 @@
 //  📸 GIF ITSUKI — Random GIF Collection
 // ============================================
 
-// Koleksi GIF Nakano Itsuki dari Tenor (direct URL)
+// Verified working direct links for Itsuki Nakano
 const GIF_COLLECTION = {
   happy: [
-    'https://media.tenor.com/L44vNgYl_OIAAAAM/itsuki-nakano-itsuki.gif',
-    'https://media.tenor.com/5yLDMXVfzCIAAAAM/itsuki-nakano-quintessential-quintuplets.gif',
-    'https://media.tenor.com/gL3d3gqZvJMAAAAM/itsuki-happy.gif',
+    'https://media1.tenor.com/m/_4-_lF8oRmUAAAAC/itsuki-nakano-the-quintessential-quintuplets.gif',
+    'https://media1.tenor.com/m/0cj0Cd-yf9kAAAAd/nakano-itsuki.gif',
   ],
   eating: [
-    'https://media.tenor.com/V-Kt7u2T8HYAAAAM/itsuki-nakano-eating.gif',
-    'https://media.tenor.com/bJUqIwq2btwAAAAM/itsuki-eat.gif',
-    'https://media.tenor.com/QFgJKBVj0VMAAAAM/itsuki-nakano.gif',
+    'https://media1.tenor.com/m/41n0UYCQagIAAAAd/itsuki-quintess.gif',
+    'https://media1.tenor.com/m/8gTsMIC6YLoAAAAC/hanayome-itsuki.gif',
   ],
   angry: [
-    'https://media.tenor.com/DUaQhkx9cesAAAAM/itsuki-angry.gif',
-    'https://media.tenor.com/Fhu0vGQ8BFUAAAAM/itsuki-nakano.gif',
+    'https://media1.tenor.com/m/Bl8UU1w9PuMAAAAd/itsuki-skillbudy.gif',
+    'https://media1.tenor.com/m/P65_8Ij_OM8AAAAd/pouting-face-the-quintessential-quintuplets.gif',
   ],
   cute: [
-    'https://media.tenor.com/48cxHOZIeL0AAAAM/itsuki-nakano-itsuki.gif',
-    'https://media.tenor.com/0YyJJ5yAGjwAAAAM/itsuki-quintuplets.gif',
-    'https://media.tenor.com/WyeLqxmJj5YAAAAM/itsuki-nakano.gif',
+    'https://media1.tenor.com/m/ABkcBqwf1ZgAAAAC/the-quintessential-quintuplets-nanako.gif',
+    'https://media1.tenor.com/m/sE6vBI7hUwwAAAAd/itsuki-nakano-the-quintessential-quintuplets.gif',
   ],
   blush: [
-    'https://media.tenor.com/z4nptjgAxckAAAAM/itsuki-blush.gif',
-    'https://media.tenor.com/SqGHT8LyLAMAAAAM/itsuki-nakano.gif',
+    'https://media1.tenor.com/m/E2zznNCeGtEAAAAd/itsuki-nakano-gotoubun-no-hanayome.gif',
+    'https://media1.tenor.com/m/6snLTGl10Q0AAAAC/shake-the-quintessential-quintuplets.gif',
   ],
 };
 
-// Semua GIF digabung jadi satu flat array
+// All GIFs combined into one flat array
 const ALL_GIFS = Object.values(GIF_COLLECTION).flat();
 
-// Komentar random saat kirim GIF
+// Random comments when sending a GIF
 const GIF_COMMENTS = [
-  'Bu-bukan berarti aku sengaja kirim foto ya... kamu yang minta! 😤',
-  'Ini aku lagi... etto... jangan di-save ya! 😳',
-  'Mou~ jangan lihat aku terus dong! 💕',
-  'Ini buat kamu aja ya... special desu! ⭐',
-  'Hehe~ aku kawaii kan? ...Bu-bukan aku yang bilang!  😤',
-  'Jangan bilang siapa-siapa aku kirim ini ya~ 🌟',
-  'Aku... lagi mood bagus aja, makanya kirim foto. Jangan ge-er! 😊',
-  'Kalau kamu save, aku... nggak marah sih. Chotto dake ne! 💕',
+  'I-it\'s not like I intentionally sent this photo... you asked for it! 😤',
+  'This is me... etto... don\'t save it, okay! 😳',
+  'Mou~ stop staring at me! 💕',
+  'This is just for you... special desu! ⭐',
+  'Hehe~ am I cute? ...N-not that I said it! 😤',
+  'Don\'t tell anyone I sent this, okay~ 🌟',
+  'I\'m... just in a good mood, that\'s why I sent a photo. Don\'t get the wrong idea! 😊',
+  'If you save it, I... won\'t be mad. Just a little bit ne! 💕',
 ];
 
 /**
- * Mendapatkan random GIF URL
- * @param {string} [category] - Opsional: happy, eating, angry, cute, blush
+ * Get random GIF URL
+ * @param {string} [category] - Optional: happy, eating, angry, cute, blush
  */
 function getRandomGif(category) {
   let pool;
@@ -59,7 +56,7 @@ function getRandomGif(category) {
 }
 
 /**
- * Mendapatkan komentar random
+ * Get random comment
  */
 function getRandomComment() {
   return GIF_COMMENTS[Math.floor(Math.random() * GIF_COMMENTS.length)];
