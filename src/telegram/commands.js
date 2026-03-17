@@ -1,9 +1,9 @@
-const { CHARACTER_DATA } = require('./character');
-const { AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE } = require('./config');
-const { getAIResponse, resetHistory, getUserName, isOwner, getTimePeriod } = require('./ai');
-const { formatFoodRecommendation } = require('./food');
-const { getRandomGif, getRandomComment } = require('./gifs');
-const { getFormattedStats } = require('./stats');
+const { CHARACTER_DATA } = require('../core/character');
+const { AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE } = require('../core/config');
+const { getAIResponse, resetHistory, getUserName, isOwner, getTimePeriod } = require('../core/ai');
+const { formatFoodRecommendation } = require('../features/food');
+const { getRandomGif, getRandomComment } = require('../features/gifs');
+const { getFormattedStats } = require('../features/stats');
 
 function registerCommands(bot) {
   // Common log for any command

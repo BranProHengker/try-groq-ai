@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = path.join(__dirname, '..', '..', 'data');
 const HISTORY_FILE = path.join(DATA_DIR, 'history.json');
 
 // Pastikan folder data ada

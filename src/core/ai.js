@@ -1,9 +1,9 @@
 const Groq = require('groq-sdk');
 const { GROQ_API_KEY, OWNER_USERNAME, MAX_HISTORY_LENGTH, AI_MODEL, AI_TEMPERATURE, AI_MAX_TOKENS } = require('./config');
 const { buildSystemPrompt } = require('./character');
-const { loadHistory, saveHistory } = require('./memory');
-const { getMoodInfo, recordInteraction } = require('./mood');
-const { recordMessage } = require('./stats');
+const { loadHistory, saveHistory } = require('../storage/memory');
+const { getMoodInfo, recordInteraction } = require('../features/mood');
+const { recordMessage } = require('../features/stats');
 
 const groq = new Groq({ apiKey: GROQ_API_KEY });
 

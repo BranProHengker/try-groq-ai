@@ -1,10 +1,10 @@
 const readline = require('readline');
 const chalk = require('chalk');
-const { getAIResponse, resetHistory, getUserName, isOwner, getTimePeriod } = require('./ai');
-const { CHARACTER_DATA, buildSystemPrompt } = require('./character');
-const { formatFoodRecommendation } = require('./food');
-const { getRandomGif, getRandomComment } = require('./gifs');
-const { getFormattedStats } = require('./stats');
+const { getAIResponse, resetHistory, getUserName, isOwner, getTimePeriod } = require('../core/ai');
+const { CHARACTER_DATA, buildSystemPrompt } = require('../core/character');
+const { formatFoodRecommendation } = require('../features/food');
+const { getRandomGif, getRandomComment } = require('../features/gifs');
+const { getFormattedStats } = require('../features/stats');
 
 // ============================================
 //  🎨 COLORS & CONFIG
@@ -228,7 +228,7 @@ async function main() {
 
     // Model
     if (trimmed === '/model') {
-      const { AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE } = require('./config');
+      const { AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE } = require('../core/config');
       console.log('');
       console.log(BOLD('  🧠 AI Model Info:'));
       console.log('');
