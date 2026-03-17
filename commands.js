@@ -1,6 +1,9 @@
 const { CHARACTER_DATA } = require('./character');
 const { AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE } = require('./config');
-const { getAIResponse, resetHistory, getUserName, isOwner } = require('./ai');
+const { getAIResponse, resetHistory, getUserName, isOwner, getTimePeriod } = require('./ai');
+const { formatFoodRecommendation } = require('./food');
+const { getRandomGif, getRandomComment } = require('./gifs');
+const { getFormattedStats } = require('./stats');
 
 function registerCommands(bot) {
   // /start — Pesan selamat datang
@@ -15,30 +18,30 @@ function registerCommands(bot) {
       ? `
 ⭐ *Nakano Itsuki desu!* ⭐
 
-H-halo ${name}! 😊
-Bu-bukan berarti aku senang kamu chat aku ya... tapi ya sudahlah, aku akan menemanimu ngobrol. 💕
+H-hello ${name}! 😊
+I-it's not like I'm happy that you're chatting with me... but well, I'll keep you company anyway. 💕
 
-Aku Itsuki, adik bungsu dari lima bersaudara Nakano~
-Kamu bisa tanya apa saja, aku akan berusaha menjawab!
+I'm Itsuki, the youngest of the five Nakano sisters~
+You can ask me anything, I'll do my best to answer!
 
-🌟 /help — Lihat perintah yang tersedia
-🔄 /reset — Mulai percakapan baru
-🍖 /about — Tentang aku~
+🌟 /help — See available commands
+🔄 /reset — Start a fresh conversation
+🍖 /about — About me~
 
-Jangan lupa makan ya ${name}! 🍜
+Don't forget to eat, ${name}! 🍜
       `.trim()
       : `
 ⭐ *Nakano Itsuki desu!* ⭐
 
-Halo ${name}-san! 😊
-Aku Itsuki, adik bungsu dari lima bersaudara Nakano~
-Kamu bisa tanya apa saja, aku akan berusaha menjawab!
+Hello ${name}-san! 😊
+I'm Itsuki, the youngest of the five Nakano sisters~
+You can ask me anything, I'll do my best to answer!
 
-🌟 /help — Lihat perintah yang tersedia
-🔄 /reset — Mulai percakapan baru
-🍖 /about — Tentang aku~
+🌟 /help — See available commands
+🔄 /reset — Start a fresh conversation
+🍖 /about — About me~
 
-Selamat mengobrol! 🍜
+Enjoy our chat! 🍜
       `.trim();
 
     bot.sendMessage(chatId, welcomeMessage, { parse_mode: 'Markdown' });
@@ -51,19 +54,22 @@ Selamat mengobrol! 🍜
     const suffix = isOwner(msg) ? '' : '-san';
 
     const helpMessage = `
-🌟 *Perintah yang tersedia, ${name}${suffix}:*
+🌟 *Available commands, ${name}${suffix}:*
 
-/start — Mulai ulang percakapan
-/help — Tampilkan bantuan ini
-/reset — Reset riwayat chat kita
-/about — Info tentang aku~
-/model — Info model AI
+/start — Restart the conversation
+/help — Show this help message
+/reset — Reset our chat history
+/about — Info about me~
+/model — AI model info
+/foods — Food recommendations from Itsuki 🍖
+/itsuki — Send an Itsuki GIF~! 📸
+/stats — Your chat statistics 📊
 
-💡 *Tips dari Itsuki:*
-• Kirim pesan apa saja untuk ngobrol denganku!
-• Aku mengingat percakapan kita lho~ 💕
-• Pakai /reset kalau mau mulai topik baru
-• Jangan lupa makan teratur ya! 🍖
+💡 *Tips from Itsuki:*
+• Send any message to chat with me!
+• I remember our conversation, you know~ 💕
+• Use /reset if you want to start a new topic
+• Remember to eat regularly! 🍖
     `.trim();
 
     bot.sendMessage(chatId, helpMessage, { parse_mode: 'Markdown' });
@@ -75,7 +81,7 @@ Selamat mengobrol! 🍜
     const name = getUserName(msg);
     const suffix = isOwner(msg) ? '' : '-san';
     resetHistory(chatId);
-    bot.sendMessage(chatId, `🔄 Oke ${name}${suffix}, aku sudah lupa percakapan kita sebelumnya~ Mau ngobrol apa sekarang? 😊`);
+    bot.sendMessage(chatId, `🔄 Okay ${name}${suffix}, I've forgotten our previous conversation~ What should we talk about now? 😊`);
   });
 
   // /about — Info tentang Itsuki
@@ -86,31 +92,31 @@ Selamat mengobrol! 🍜
     const aboutMessage = `
 ⭐ *${d.name} (${d.japanese_name})* ⭐
 
-📝 *Data Pribadi:*
+📝 *Personal Data:*
 • Anime: _${d.series}_
-• Tanggal Lahir: ${d.birthday}
-• Umur: ${d.age}
-• Tinggi: ${d.height}
-• Berat: ${d.weight}
-• Rambut: ${d.appearance.hair}
-• Warna Rambut: ${d.appearance.haircolor}
-• Mata: ${d.appearance.eyes}
+• Birthday: ${d.birthday}
+• Age: ${d.age}
+• Height: ${d.height}
+• Weight: ${d.weight}
+• Hair: ${d.appearance.hair}
+• Hair Color: ${d.appearance.haircolor}
+• Eyes: ${d.appearance.eyes}
 
-👨‍👩‍👧‍👦 *Keluarga:*
-• Saudari: ${d.family.sisters.join(', ')}
-• Ayah: ${d.family.father}
-• Ibu: ${d.family.mother}
+👨‍👩‍👧‍👦 *Family:*
+• Sisters: ${d.family.sisters.join(', ')}
+• Father: ${d.family.father}
+• Mother: ${d.family.mother}
 
-💕 *Pacar: ${d.boyfriend}* 💕
+💕 *Boyfriend: ${d.boyfriend}* 💕
 
-🍖 *Favorit:*
-• Makanan: ${d.favorite_food}
-• Hewan: ${d.favorite_animal} 🦘
-• Hobi: ${d.hobbies}
+🍖 *Favorites:*
+• Food: ${d.favorite_food}
+• Animal: ${d.favorite_animal} 🦘
+• Hobbies: ${d.hobbies}
 
-🎯 *Cita-cita:* ${d.aspirations}
+🎯 *Aspiration:* ${d.aspirations}
 
-_Bu-bukan berarti aku sengaja kasih tahu ya... kamu yang minta!_ 😤
+_I-it's not like I told you on purpose... you asked for it!_ 😤
     `.trim();
 
     bot.sendMessage(chatId, aboutMessage, { parse_mode: 'Markdown' });
@@ -121,17 +127,48 @@ _Bu-bukan berarti aku sengaja kasih tahu ya... kamu yang minta!_ 😤
     const chatId = msg.chat.id;
 
     const modelMessage = `
-🧠 *Info Model AI:*
+🧠 *AI Model Info:*
 
 • *Provider:* Groq
 • *Model:* ${AI_MODEL}
 • *Max Tokens:* ${AI_MAX_TOKENS}
 • *Temperature:* ${AI_TEMPERATURE}
 
-_Didukung oleh Groq's LPU™ untuk inferensi super cepat!_ ⚡
+_Powered by Groq's LPU™ for super fast inference!_ ⚡
     `.trim();
 
     bot.sendMessage(chatId, modelMessage, { parse_mode: 'Markdown' });
+  });
+
+  // /foods — Rekomendasi makanan
+  bot.onText(/\/foods/, (msg) => {
+    const chatId = msg.chat.id;
+    const timePeriod = getTimePeriod();
+    const recommendation = formatFoodRecommendation(timePeriod);
+    bot.sendMessage(chatId, recommendation, { parse_mode: 'Markdown' });
+  });
+
+  // /itsuki — Random GIF Itsuki
+  bot.onText(/\/itsuki/, async (msg) => {
+    const chatId = msg.chat.id;
+    const gifUrl = getRandomGif();
+    const comment = getRandomComment();
+
+    try {
+      await bot.sendAnimation(chatId, gifUrl);
+      await bot.sendMessage(chatId, comment);
+    } catch (err) {
+      // Fallback: kirim sebagai URL kalau gagal sebagai animation
+      bot.sendMessage(chatId, `📸 ${comment}\n\n${gifUrl}`);
+    }
+  });
+
+  // /stats — Statistik chat
+  bot.onText(/\/stats/, (msg) => {
+    const chatId = msg.chat.id;
+    const name = getUserName(msg);
+    const statsMsg = getFormattedStats(chatId, name);
+    bot.sendMessage(chatId, statsMsg, { parse_mode: 'Markdown' });
   });
 }
 
@@ -144,11 +181,11 @@ function registerMessageHandler(bot) {
 
     if (msg.text && msg.text.startsWith('/')) return;
 
-    // Abaikan pesan non-teks
+    // Ignore non-text messages
     if (!msg.text) {
       const name = getUserName(msg);
       const suffix = isOwner(msg) ? '' : '-san';
-      bot.sendMessage(chatId, `📝 ${name}${suffix}, aku hanya bisa membaca pesan teks ya! Kirim tulisan saja ne~ 😊`);
+      bot.sendMessage(chatId, `📝 ${name}${suffix}, I can only read text messages! Please send words instead ne~ 😊`);
       return;
     }
 
@@ -163,10 +200,10 @@ function registerMessageHandler(bot) {
         await bot.sendMessage(chatId, aiResponse);
       }
     } catch (error) {
-      console.error('❌ Error memproses pesan:', error.message);
+      console.error('❌ Error processing message:', error.message);
       const name = getUserName(msg);
       const suffix = isOwner(msg) ? '' : '-san';
-      bot.sendMessage(chatId, `😢 Gomen ${name}${suffix}... ada yang error. Coba lagi ya!`);
+      bot.sendMessage(chatId, `😢 Gomen ${name}${suffix}... something went wrong. Please try again!`);
     }
   });
 }

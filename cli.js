@@ -45,10 +45,10 @@ function showWelcome() {
   printDivider();
   console.log('');
   console.log(SECONDARY('  Tips:'));
-  console.log(DIM('  • Ketik pesan apapun untuk mengobrol dengan Itsuki'));
-  console.log(DIM('  • Ketik ') + BOLD('/reset') + DIM(' untuk menghapus riwayat percakapan'));
-  console.log(DIM('  • Ketik ') + BOLD('/clear') + DIM(' untuk membersihkan layar'));
-  console.log(DIM('  • Ketik ') + BOLD('exit') + DIM(' untuk keluar'));
+  console.log(DIM('  • Type any message to chat with Itsuki'));
+  console.log(DIM('  • Type ') + BOLD('/reset') + DIM(' to clear chat history'));
+  console.log(DIM('  • Type ') + BOLD('/clear') + DIM(' to clear the screen'));
+  console.log(DIM('  • Type ') + BOLD('exit') + DIM(' to quit'));
   console.log('');
   printDivider();
   console.log('');
@@ -61,7 +61,7 @@ function startLoading() {
   const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   let i = 0;
   return setInterval(() => {
-    process.stdout.write(`\r  ${PRIMARY(frames[i])} ${DIM('Itsuki sedang berpikir...')}`);
+    process.stdout.write(`\r  ${PRIMARY(frames[i])} ${DIM('Itsuki is thinking...')}`);
     i = (i + 1) % frames.length;
   }, 80);
 }
@@ -105,7 +105,7 @@ async function main() {
     process.exit(0);
   });
 
-  // Main loop — terus menerus sampai user ketik exit
+  // Main loop — keep going until user types exit
   while (true) {
     let input;
     try {
@@ -120,7 +120,7 @@ async function main() {
     // Exit
     if (trimmed.toLowerCase() === 'exit' || trimmed.toLowerCase() === 'quit') {
       console.log('');
-      console.log(PRIMARY('  Ja-ne, Bran-kun! Jangan lupa makan ya~ 🍖'));
+      console.log(PRIMARY('  Ja-ne, Bran-kun! Don\'t forget to eat, okay~ 🍖'));
       console.log('');
       process.exit(0);
     }
@@ -129,7 +129,7 @@ async function main() {
     if (trimmed === '/reset') {
       resetHistory(SESSION_ID);
       console.log('');
-      console.log(DIM('  ✓ Riwayat percakapan sudah di-reset'));
+      console.log(DIM('  ✓ Chat history has been reset'));
       console.log('');
       continue;
     }
@@ -161,7 +161,7 @@ async function main() {
       console.log('');
     } catch (error) {
       stopLoading(loader);
-      console.log(chalk.red(`  ✗ Error: ${error.message || 'Gomen, ada yang error.'}`));
+      console.log(chalk.red(`  ✗ Error: ${error.message || 'Gomen, something went wrong.'}`));
       console.log('');
     }
   }

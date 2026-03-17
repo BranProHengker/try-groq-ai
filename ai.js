@@ -1,28 +1,24 @@
 const Groq = require('groq-sdk');
 const { GROQ_API_KEY, OWNER_USERNAME, MAX_HISTORY_LENGTH, AI_MODEL, AI_TEMPERATURE, AI_MAX_TOKENS } = require('./config');
 const { buildSystemPrompt } = require('./character');
-
+const { loadHistory, saveHistory } = require('./memory');
+const { getMoodInfo, recordInteraction } = require('./mood');
+const { recordMessage } = require('./stats');
 
 const groq = new Groq({ apiKey: GROQ_API_KEY });
 
-const conversationHistory = new Map();
+// Load persistent history saat startup
+const conversationHistory = loadHistory();
 
-/**
- * Cek apakah user adalah pemilik bot (Bran-kun)
- */
 function isOwner(msg) {
   return msg.from?.username?.toLowerCase() === OWNER_USERNAME.toLowerCase();
 }
-
 
 function getUserName(msg) {
   if (isOwner(msg)) return 'Bran-kun';
   return msg.from?.first_name || 'Teman';
 }
 
-/**
- * Mendapatkan periode waktu saat ini
- */
 function getTimePeriod() {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 11) return 'pagi';
@@ -38,9 +34,6 @@ function getUserHistory(chatId) {
   return conversationHistory.get(chatId);
 }
 
-/**
- * Menambahkan pesan ke riwayat percakapan user
- */
 function addToHistory(chatId, role, content) {
   const history = getUserHistory(chatId);
   history.push({ role, content });
@@ -48,18 +41,16 @@ function addToHistory(chatId, role, content) {
   if (history.length > MAX_HISTORY_LENGTH) {
     conversationHistory.set(chatId, history.slice(-MAX_HISTORY_LENGTH));
   }
+
+  // Auto-save ke file
+  saveHistory(conversationHistory);
 }
 
-/**
- * Reset riwayat percakapan user
- */
 function resetHistory(chatId) {
   conversationHistory.delete(chatId);
+  saveHistory(conversationHistory);
 }
 
-/**
- * Mendapatkan format tanggal lengkap Indonesia
- */
 function getIndonesianDate() {
   const now = new Date();
   return new Intl.DateTimeFormat('id-ID', {
@@ -68,23 +59,14 @@ function getIndonesianDate() {
   }).format(now);
 }
 
-/**
- * Mencoba mengambil data hari libur/peringatan (opsional)
- * Untuk saat ini kita pakai static atau bisa dikembangkan ke API
- */
 async function getTodayHoliday() {
   try {
-    // Kita bisa pakai API publik seperti api-harilibur.vercel.app nantinya
-    // Untuk sekarang kita kasih tahu AI tanggalnya saja dulu biar dia cari di memorinya
     return "Belum ada data peringatan khusus hari ini.";
   } catch (err) {
     return "Tidak ada data.";
   }
 }
 
-/**
- * Mengirim pesan ke Groq API dan mendapat respons AI
- */
 async function getAIResponse(chatId, userMessage, msg) {
   addToHistory(chatId, 'user', userMessage);
 
@@ -94,7 +76,14 @@ async function getAIResponse(chatId, userMessage, msg) {
   const fullDate = getIndonesianDate();
   const holiday = await getTodayHoliday();
 
-  const systemPrompt = buildSystemPrompt(userName, owner, currentTime, fullDate, holiday);
+  // Mood system
+  const moodInfo = getMoodInfo(chatId, currentTime);
+  recordInteraction(chatId);
+
+  // Stats tracking
+  recordMessage(chatId, userName, userMessage);
+
+  const systemPrompt = buildSystemPrompt(userName, owner, currentTime, fullDate, holiday, moodInfo);
 
   const history = getUserHistory(chatId);
   const messages = [
@@ -131,4 +120,4 @@ async function getAIResponse(chatId, userMessage, msg) {
   }
 }
 
-module.exports = { getAIResponse, resetHistory, getUserName, isOwner };
+module.exports = { getAIResponse, resetHistory, getUserName, isOwner, getTimePeriod };
