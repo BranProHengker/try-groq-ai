@@ -2,6 +2,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const { TELEGRAM_TOKEN } = require('../core/config');
 const { registerCommands, registerMessageHandler } = require('./commands');
 
+require('../api/server');
+
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 
 // Register handlers
